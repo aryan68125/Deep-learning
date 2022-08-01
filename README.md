@@ -1,4 +1,22 @@
 # This repository holds all the programs and resources related to deep learning
+## Softmax VS Sigmoid functions
+### Softmax :
+1. Softmax is used when the number of classes K > 2
+2. Softmax equation ->
+![](util_pics/sofmax_vs_sigmoid/sofmax_equation.png)
+3. working principles ->
+![](util_pics/sofmax_vs_sigmoid/Working-principles-of-softmax-function.jpg)
+4. Softmax function image ->
+![](util_pics/sofmax_vs_sigmoid/Softmax-function-image.png)
+### Sigmoid :
+1. Sigmoid is used when we have K = 2. In other words we use sigmoid to do binary classification
+2. Sigmoid equation ->
+![](util_pics/sofmax_vs_sigmoid/sigmoid_equation.png)
+3. working principles ->
+![](util_pics/sofmax_vs_sigmoid/sigmoid_explaination.png)
+4. Sigmoid function image ->
+![](util_pics/sofmax_vs_sigmoid/sigmoid_function_graph.png)
+
 ## Softmax :
 ### implementation -->
 #### Now as you know we are going to be working with multiple samples at the same time so let's try this again with a matrix. Here we are randomely taking a matrix of 100 samples by 5 categories
@@ -116,21 +134,3 @@ Classification rate for the randomly chosen weights : 0.3333333333333333
 ```
 ### Conclusion :
 #### Our goal here was to learn how to do prediction using neural network and not how to train neural network. The score will go up when we eventually train the neural network and run predictions again.
-
-## Softmax VS Sigmoid functions
-### Softmax :
-1. Softmax is used when the number of classes K > 2
-2. Softmax equation ->
-![](util_pics/sofmax_vs_sigmoid/sofmax_equation.png)
-3. working principles ->
-![](util_pics/sofmax_vs_sigmoid/Working-principles-of-softmax-function.jpg)
-4. Softmax function image ->
-![](util_pics/sofmax_vs_sigmoid/Softmax-function-image.png)
-### Sigmoid :
-1. Sigmoid is used when we have K = 2. In other words we use sigmoid to do binary classification
-2. Sigmoid equation ->
-![](util_pics/sofmax_vs_sigmoid/sigmoid_equation.png)
-3. working principles ->
-![](util_pics/sofmax_vs_sigmoid/sigmoid_explaination.png)
-4. Sigmoid function image ->
-![](util_pics/sofmax_vs_sigmoid/sigmoid_function_graph.png)
