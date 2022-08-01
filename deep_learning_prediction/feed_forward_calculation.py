@@ -49,6 +49,7 @@ def forward(X,W1,b1,W2,b2):
 
     #Now we can calculate the softmax of the next layer
     A = Z.dot(W2) +b2
+    #Perform softmax operation on A --> softmax(A)
     #we exponentiate A
     expA = np.exp(A)
     #Output Y
