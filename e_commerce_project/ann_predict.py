@@ -42,9 +42,12 @@ def softmax(a):
 #function to move into forward direction
 def forward(X,W1,b1,W2,b2):
     #to calculate the hidden layer values we are gonna use tanh activation function
+    #X.dot(W1)+b1 is the logistic regression formula
+    #Z is the value at the hidden layer
     Z = np.tanh(X.dot(W1)+b1)
 
     #Now we can calculate the softmax of the next layer
+    # Z.dot(W2) +b2 is also a logistic regression formula
     A = Z.dot(W2) +b2
     #perform softmax operation on A
     softmax_calculation = softmax(A)
