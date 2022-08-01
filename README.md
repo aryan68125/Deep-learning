@@ -9,9 +9,10 @@ A = np.random.randn(100,5)
 1. step 1 : exponentiate these activation (So that they are all positive)
 2. step 2 : divide by the sum
    ```Now you are gonna have a problem here because you dont want to divide by the whole sum because then the whole thing is gonna sum to 1
-   "answer = expA/expA.sum()"
-   We want every row to sum to one for each sample. axis=1 means we want to do summision along the row
-   "answer = expA/expA.sum(axis=1,keepdims=True)"```
+      "answer = expA/expA.sum()"
+      We want every row to sum to one for each sample. axis=1 means we want to do summision along the row
+      "answer = expA/expA.sum(axis=1,keepdims=True)"
+   ```
 
 ```
 expA = np.exp(A)
