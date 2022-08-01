@@ -133,4 +133,4 @@ assert(len(Predictions)==len(Y))
 Classification rate for the randomly chosen weights : 0.3333333333333333
 ```
 ### Conclusion :
-#### Our goal here was to learn how to do prediction using neural network and not how to train neural network. The score will go up when we eventually train the neural network and run predictions again.
+#### Our goal here was to learn how to do prediction using neural network and not how to train neural network. The score will go up when we eventually train the neural network and run predictions again. 
