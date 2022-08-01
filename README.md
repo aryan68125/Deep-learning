@@ -110,7 +110,9 @@ def classification_rate(Y,P):
 ```
 assert(len(Predictions)==len(Y))
 ```
-#### The final prediction of this neural network model is : ->
+#### The final prediction of this neural network model is : -> As you can see that the prediction is exactly what we expected 1/3. This prediction score is low because we din't train the neural network model as of yet. As you know that training the model means finding the oprtimal weights for the model. But If you recall we did not do that instead we randomly selected weights for our neural network. Hence the result.
 ```
 Classification rate for the randomly chosen weights : 0.3333333333333333
 ```
+### Conclusion :
+#### Our goal here was to learn how to do prediction using neural network and not how to train neural network. The score will go up when we eventually train the neural network and run predictions again.
