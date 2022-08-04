@@ -177,6 +177,7 @@ N = len(Y)
 ```
 #### Data points of the created gaussian graph are plotted here for visualization of the data --->
 ![](util_pics/deep_learning_prediction/neural_network_with_randomely_selecting_weights.png)
+
 ### case 1 : using for loop to find derivatives
 1. Step 1 create a forward function
 ```
