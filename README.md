@@ -138,6 +138,45 @@ Classification rate for the randomly chosen weights : 0.3333333333333333
 #### Our goal here was to learn how to do prediction using neural network and not how to train neural network. The score will go up when we eventually train the neural network and run predictions again.
 
 ## BackPropogation :
+### We are going to create 3 gaussian clouds as our input data points in order to demonstrate back propogation while training the neural networks
+#### Here is the code to create three gaussian clouds as an input data --->
+```
+#let's create 500 samples per class
+  #So what we are gonna do is generate some gaussian clouds
+  Nclass = 500
+
+  #Number of inputs
+  D=2
+  #Number of hidden layers
+  M=3
+  #number of classes
+  K=3
+
+  #So we are gonna have 3 gaussian clouds
+  #np.random.randn(Nclass, 2) + np.array([0,-2]) So the 1st gaussian cloud is gonna centered at 0,-2
+  X1 = np.random.randn(Nclass, D) + np.array([0,-2])
+  #np.random.randn(Nclass, 2) + np.array([2,2]) So the 2nd gaussian cloud is gonna centered at 2,2
+  X2 = np.random.randn(Nclass, D) + np.array([2,2])
+  #np.random.randn(Nclass, 2) + np.array([-2,2]) So the 3rd gaussian cloud is gonna centered at -2,2
+  X3 = np.random.randn(Nclass, D) + np.array([-2,2])
+  X = np.vstack([X1,X2,X3])
+
+  #create our labels
+  Y = np.array([0]*Nclass + [1]*Nclass + [2]*Nclass)
+```
+#### One hot encoding
+```
+N = len(Y)
+  #Turn the targets into an indicator variable because we expect those to be either zero or one
+  #where as in Y variable we represent the classes by zero to k-1
+  #We need an indicator variable of size N by K
+  T = np.zeros((N,K))
+  #So this is like a one hot encoding for the targets
+  for i in range(N):
+      T[i,Y[i]] = 1
+```
+#### Data points of the created gaussian graph are plotted here for visualization of the data --->
+![](util_pics/deep_learning_prediction/neural_network_with_randomely_selecting_weights.png)
 ### case 1 : using for loop to find derivatives
 1. Step 1 create a forward function
 ```
