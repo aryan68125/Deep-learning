@@ -57,7 +57,18 @@ def softmax(a):
 #defining forward function(X,W1,b1,W2,b2):
 #we have to return Z which is the value of the hidden units also along with the value of the softmax function calculation
 def forward(X,W1,b1,W2,b2):
+    # sigmoid
+    # Z = 1 / (1 + np.exp( -(X.dot(W1) + b1) ))
+
+    # tanh
+    # Z = np.tanh(X.dot(W1) + b1)
     Z = np.tanh(X.dot(W1)+b1) #input->hidden layers
+
+    # relu
+    # Z = X.dot(W1) + b1
+    # Z = Z * (Z > 0)
+
+    #Z.dot(W2) + b2 --> activation
     return softmax(Z.dot(W2) + b2),Z #softmax hidden->output layer
 
 #define the predict function
@@ -68,7 +79,7 @@ def predict(P_Y_given_X):
 def classification_rate(Y,P):
     return np.mean(Y==P)
 
-#function to calculate the cross_entropy
+#function to calculate the cross_entropy for multi class classification
 # T -> Targets
 def cross_entropy(T,pY):
     return -np.mean(T * np.log(pY))
@@ -96,10 +107,12 @@ for i in range(99999):
     # derivative of tanh = (1-Ztrain*Ztrain)
     '''
     [pYtrain = Output (Y)] - [Ytrain_indicator = Targets (T)]
-    dz = (T-Y).dot(W2.T) * Z * [(1-Z) --> sigmoid]
+    dz = (Y-T).dot(W2.T) * Z * (1-Z) --> sigmoid activation function
+    dZ = (Y - T).dot(W2.T) * (1-Ztrain*Ztrain) -->tanh activation function
+    dZ = (Y - T).dot(W2.T) * (Z > 0) --> relu activation function
     delta_J_wrt_W = X.T.dot(dz)
     '''
-    dZ = (pYtrain - Ytrain_indicator).dot(W2.T) * (1-Ztrain*Ztrain)
+    dZ = (pYtrain - Ytrain_indicator).dot(W2.T) * (1-Ztrain*Ztrain) # activation function
     W1 -= learning_rate * Xtrain.T.dot(dZ)
     b1 -= learning_rate * dZ.sum(axis=0)
 

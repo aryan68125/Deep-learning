@@ -9,7 +9,7 @@ def forward(X,W1,b1,W2,b2):
     # sigmoid(-(a+b1)) --> sigmoid(-a-b1) hence exp(-X.dot(W1)-b1)
     Z = 1/(1+np.exp(-X.dot(W1)-b1))
 
-    #Now we can calculate the softmax of the next layer
+    #Now we can calculate the softmax of the next layer (Activation)
     A = Z.dot(W2) +b2
     #Perform softmax operation on A --> softmax(A)
     #we exponentiate A
