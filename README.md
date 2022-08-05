@@ -138,6 +138,8 @@ Classification rate for the randomly chosen weights : 0.3333333333333333
 #### Our goal here was to learn how to do prediction using neural network and not how to train neural network. The score will go up when we eventually train the neural network and run predictions again.
 
 ## BackPropogation :
+#### Diagram of BackPropogation ---->
+![](util_pics/backPropogation/backpropogation.png)
 ### We are going to create 3 gaussian clouds as our input data points in order to demonstrate back propogation while training the neural networks
 #### Here is the code to create three gaussian clouds as an input data --->
 ```
