@@ -140,6 +140,7 @@ Classification rate for the randomly chosen weights : 0.3333333333333333
 ## BackPropogation :
 #### Diagram of BackPropogation ---->
 ![](util_pics/backPropogation/backpropogation.png)
+#### BackPropogation is just a fancy name given to the process of training a neural network but in reality it's nothing but gradient descent. Which is used to find the optimal weights for the neural network
 ### We are going to create 3 gaussian clouds as our input data points in order to demonstrate back propogation while training the neural networks
 #### Here is the code to create three gaussian clouds as an input data --->
 ```
