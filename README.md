@@ -496,3 +496,109 @@ def derivative_b1(T, Y, W2, Z):
 ```
 cost : -157.93332306252032 , classification_rate : 0.962
 ```
+
+## Logisitc regression with Softmax :
+#### As you know for multiclass classification we use Softmax and for binary classification we use Sigmoid So here we will be trying to do multiclass prediction using logistic regression via Softmax instead of sigmoid
+1. Define a function for indicator matrix
+```
+#We are gonna need a function to get the indicator matrix from the targets
+# takes in Y output and K number of classes
+def y2indicator(y,K):
+    N = len(y)
+    indicator_matrix = np.zeros((N,K))
+    #So this is like a one hot encoding for the targets
+    for i in range(N):
+        indicator_matrix[i,y[i]] = 1
+    return indicator_matrix
+```
+2. Get the data
+```
+#Now we get our data
+X,Y = get_data()
+#Then shuffle our data
+X,Y = shuffle(X,Y)
+#convert Y to int32
+Y = Y.astype(np.int32)
+D = X.shape[1]
+#K the number of classes assuming our classes are numbered from 0 to k-1
+K = len(set(Y))
+```
+3. Split the data into train and test data
+```
+#split our data into train and test sets
+#train dataset
+Xtrain = X[:-100]
+Ytrain = Y[:-100]
+Ytrain_indicator = y2indicator(Ytrain, K)
+#test dataset
+Xtest = X[-100:]
+Ytest = Y[-100:]
+Ytest_indicator = y2indicator(Ytest, K)
+```
+3. Initialize the weights for the logisitc regression
+```
+#initialize our weights
+W = np.random.randn(D, K)
+b = np.zeros(K)
+```
+4. Define the soft max function
+```
+#let's define our softmax function
+def softmax(a):
+    expA = np.exp(a)
+    #divide by sum along the
+    summision = expA / expA.sum(axis=1,keepdims = True)
+    return summision
+```
+5. Define the forward function
+```
+#defining forward function(X,W,b):
+def forward(X,W,b):
+    return softmax(X.dot(W) + b)
+```
+6. Define the predict funtion
+```
+def predict(P_Y_given_X):
+    return np.argmax(P_Y_given_X,axis=1)
+```
+7. Define the function to calculate the classification rate. This is function is the same as binary logisitic regression classifier
+```
+def classification_rate(Y,P):
+    return np.mean(Y==P)
+```
+8. Define the cross_entropy OR cost_function OR Objective_function
+```
+def cross_entropy(T,pY):
+    return -np.mean(T*np.log(pY))
+```
+9. Now train the logistic regression model via gradient descent in a loop
+```
+#training loop starts here
+#here we are gonna keep track of train costs
+train_costs = []
+#here we are gonna keep track of test costs
+test_costs = []
+learning_rate = 0.001
+for i in range(99999):
+    pYtrain = forward(Xtrain, W, b)
+    pYtest = forward(Xtest, W, b)
+
+    ctrain = cross_entropy(Ytrain_indicator, pYtrain)
+    ctest = cross_entropy(Ytest_indicator, pYtest)
+    train_costs.append(ctrain)
+    test_costs.append(ctest)
+
+    #performing gradient descent
+    W -= learning_rate * Xtrain.T.dot(pYtrain - Ytrain_indicator)
+    b -= learning_rate * (pYtrain - Ytrain_indicator).sum(axis=0)
+    if i % 1000 == 0:
+        print(f"i : {i} ; ctrain : {ctrain} ; ctest : {ctest}")
+```
+### Results after training a multiclass logistic regression classifier using softmax are as follows :
+#### Final train and test classification rate ---->
+```
+Final train classification rate : 0.9175
+Final test classification rate : 0.88
+```
+#### Final train vs test cost graph is ---->
+![](util_pics/multiclass_classification_logistic_regression/train_vs_test_cost_multiclass_classification_logistic_regression.png)
