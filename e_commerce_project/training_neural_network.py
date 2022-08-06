@@ -62,11 +62,11 @@ def forward(X,W1,b1,W2,b2):
 
     # tanh
     # Z = np.tanh(X.dot(W1) + b1)
-    Z = np.tanh(X.dot(W1)+b1) #input->hidden layers
+    # Z = np.tanh(X.dot(W1)+b1) #input->hidden layers
 
     # relu
-    # Z = X.dot(W1) + b1
-    # Z = Z * (Z > 0)
+    Z = X.dot(W1) + b1
+    Z = Z * (Z > 0)
 
     #Z.dot(W2) + b2 --> activation
     return softmax(Z.dot(W2) + b2),Z #softmax hidden->output layer
@@ -112,7 +112,8 @@ for i in range(99999):
     dZ = (Y - T).dot(W2.T) * (Z > 0) --> relu activation function
     delta_J_wrt_W = X.T.dot(dz)
     '''
-    dZ = (pYtrain - Ytrain_indicator).dot(W2.T) * (1-Ztrain*Ztrain) # activation function
+    #dZ = (pYtrain - Ytrain_indicator).dot(W2.T) * (1-Ztrain*Ztrain) # activation function
+    dZ = (pYtrain - Ytrain_indicator).dot(W2.T) * (Ztrain > 0) #--> relu activation function
     W1 -= learning_rate * Xtrain.T.dot(dZ)
     b1 -= learning_rate * dZ.sum(axis=0)
 
