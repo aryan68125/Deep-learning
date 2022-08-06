@@ -925,3 +925,4 @@ plt.show()
 ```
 #### Error when plotted in the 3D space will look like this ---->
 ![](util_pics/deep_learning_prediction/3D_error_plot_for_the_neural_network_for_regression.png)
+#### As you can see at the corners our neural network model is not performing well due to bad predictions made by the neural network, but also there are some pockets in between where our neural network model for regression is not performing well as well.
