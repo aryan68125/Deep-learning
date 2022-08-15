@@ -12,10 +12,6 @@ from mpl_toolkits.mplot3d import Axes3D
 # Switching to Python 3 (brew install python3) or
 # using Linux are both viable work-arounds
 
-
-
-
-
 # generate and plot the data
 '''
 1. Here we are creating 500 uniformly spaced points between -2 and +2 on a 2D grid.
@@ -33,10 +29,6 @@ fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 ax.scatter(X[:,0], X[:,1], Y)
 plt.show()
-
-
-
-
 
 # make a neural network and train it
 '''
@@ -57,8 +49,6 @@ b = np.zeros(M)
 # layer 2 Output layer
 V = np.random.randn(M) / np.sqrt(M)
 c = 0
-
-
 
 '''
 Next we have a function to calculate the output
@@ -99,7 +89,6 @@ def derivative_W(X, Z, Y, Yhat, V):
   return X.T.dot(dZ)
 
 def derivative_b(Z, Y, Yhat, V):
-  # dZ = np.outer(Y - Yhat, V) * (1 - Z * Z) # this is for tanh activation
   # dZ = np.outer(T-Y, W2) * Z * (1 - Z) # this is for sigmoid activation
   # dZ = np.outer(T-Y, W2) * (1 - Z * Z) # this is for tanh activation
   # dZ = np.outer(T-Y, W2) * (Z > 0) # this is for relu activation
