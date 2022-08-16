@@ -37,13 +37,15 @@ T = np.zeros((N,K))
 for i in range(N):
     T[i,Y[i]] = 1
 
-#Tensorflow does not use regular numpy arrays instead it uses tensorflow variables
-#In this function we are going to initialize some weights also known as parameters
-#We have one argument to the function which is the shape of the weights
-#Inside this function we want to wrap the return value in a if.Variable() object these are used to encapsulate model parameters,
-#parameters that you would want to be trained during back propogation
-#inside this td.Variable(tf.random_normal()). tf.random_normal()-> works very similarly to numpy random normal function except it returns a tensorflow object instead of a numpy array
-#stddev = standard deviation
+'''
+Tensorflow does not use regular numpy arrays instead it uses tensorflow variables
+In this function we are going to initialize some weights also known as parameters
+We have one argument to the function which is the shape of the weights
+Inside this function we want to wrap the return value in a if.Variable() object these are used to encapsulate model parameters,
+parameters that you would want to be trained during back propogation
+inside this td.Variable(tf.random_normal()). tf.random_normal()-> works very similarly to numpy random normal function except it returns a tensorflow object instead of a numpy array
+stddev = standard deviation
+'''
 def init_weights(shape):
     return tf.Variable(tf.random_normal(shape,stddev=0.01))
 
@@ -54,6 +56,9 @@ This function holds the code which defines how a neural network computes an outp
 def forward(X,W1,b1,W2,b2):
     #First we will calculate the hidden layer This will use tensorflow version og the sigmoid function
     #inside that we will use tensorflows version og matrix multiplication
+    #Z = tf.nn.tanh(tf.matmul(X,W1) + b1) #-->tanh
+    #Z = tf.nn.sigmoid(tf.matmul(X,W1) + b1) #-->sigmoid
+    #Z = tf.nn.relu(tf.matmul(X,W1) + b1) #--->RelU
     Z = tf.nn.sigmoid(tf.matmul(X,W1) + b1)
     #Note that we do not apply the final softmax at this time the reason for this is numeric stability
     #tensorflow combines the softmax with the loss function
@@ -101,6 +106,8 @@ cost = tf.reduce_mean(
 In tensorflow you do not have to do any backpropogation yourself. Tensorflow does all of that automatically
 We can setup a training process by setting up an optimizer
 Again remember this function hasn't done any computation so far we have only stated how to do the computation later when we actually do them.
+0.05 --> learning rate
+we want our gradient descent optimizer to minimize the cost
 '''
 train_op = tf.train.GradientDescentOptimizer(0.05).minimize(cost)
 
@@ -108,6 +115,7 @@ train_op = tf.train.GradientDescentOptimizer(0.05).minimize(cost)
 Define the predict operation
 Here also instead of using numpy argmax we are using tensorflow argmax
 Again here also no computation is being done. we are lony saying how it should be done
+This will take in the logits from our model and return the predicted class
 '''
 predic_op = tf.argmax(logits, 1)
 
