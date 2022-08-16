@@ -132,7 +132,7 @@ sess.run(init)
 '''
 create a main training loop
 '''
-for i in range(1000):
+for i in range(3000):
     '''
     Inside the training loop we are going to do one back propogation step
     at this point we pass in our data
