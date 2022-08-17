@@ -926,3 +926,344 @@ plt.show()
 #### Error when plotted in the 3D space will look like this ---->
 ![](util_pics/deep_learning_prediction/3D_error_plot_for_the_neural_network_for_regression.png)
 #### As you can see at the corners our neural network model is not performing well due to bad predictions made by the neural network, but also there are some pockets in between where our neural network model for regression is not performing well as well.
+## Facial Recognition with Neural Network :
+### import the necessary libraries and functions from the utils.py file
+```
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn.utils import shuffle
+from util import getData, softmax, cost, error_rate, y2indicator
+```
+### class for the neural network model
+```
+class ANN(object):
+    #in the init here we are going to pass the hidden unit of this model
+    def __init__(self, M):
+        self.M = M
+
+    def fit(self, X, Y, learning_rate = 5*10e-7, reg = 1.0, epochs = 10000, show_fig = False):
+        X, Y = shuffle(X,Y)
+        Xvalidation, Yvalidation = X[-1000:], Y[-1000:]
+        X, Y = X[:-1000], Y[:-1000]
+        N,D = X.shape
+
+        #initialize the weights
+        self.W1 = np.random.randn(D,self.M) / np.sqrt(D + self.M) #hidden weights
+        self.b1 = np.zeros(self.M)
+        #hidden to output weight
+        self.W2 = np.random.randn(self.M) / np.sqrt(self.M)
+        self.b2 = 0
+
+        costs=[]
+        best_validation_error = 1
+        for i in range(epochs):
+            #forward propogation
+            pY, Z = self.forward(X)
+
+            #gradient descent
+            pY_Y = pY - Y
+            self.W2 -= learning_rate*(Z.T.dot(pY_Y) + reg*self.W2)
+            self.b2 -= learning_rate*((pY_Y).sum() + reg*self.b2)
+            #backpropogation on the input to hidden layers
+            # dZ = np.outer(pY_Y, self.W2) * (Z>0)
+            dZ = np.outer(pY_Y, self.W2) * (1-Z * Z)
+            self.W1 -= learning_rate*(X.T.dot(dZ) + reg*self.W1)
+            self.b1 -= learning_rate*(np.sum(dZ, axis=0) + reg*self.b1)
+
+            if i%10==0:
+                pYvalid, _ = self.forward(Xvalidation)
+                c = sigmoid_cost(Yvalidation, pYvalid)
+                costs.append(c)
+                e = error_rate(Yvalidation, np.round(pYvalid))
+                print(f"epochs : {i} ; costs : {c} ; error rate : {e}")
+                if e<best_validation_error:
+                    best_validation_error=e
+        print(f"best validation error : {best_validation_error}")
+
+        if show_fig:
+            plt.plot(costs)
+            plt.show()
+
+    def forward(self, X):
+         # Z = relu(X.dot(self.W1) + self.b1)
+         Z = np.tanh(X.dot(self.W1) + self.b1)
+         output = sigmoid(Z.dot(self.W2) + self.b2)
+         return output, Z
+
+    def predict(self, X):
+        pY, _ = self.forward(X)
+        return np.round(pY)
+
+    def score(self, X, Y):
+        prediction = self.predict(X)
+        return 1-error_rate(Y,prediction)
+```
+### main function
+```
+def main():
+    X, Y = getBinaryData()
+
+    #precedure to increase the number of one samples because there is a class imbalance
+    X0 = X[Y==0, :]
+    X1 = X[Y==1, :]
+    #repeate the occourances of data of X1
+    X1 = np.repeat(X1, 9, axis=0)
+    X = np.vstack([X0,X1])
+    Y = np.array([0]*len(X0) + [1]*len(X1))
+
+    #use our model the way we use scikitLearn
+    #100 is the size of the hidden layers
+    model = ANN(100)
+    model.fit(X,Y,show_fig = True)
+
+if __name__=='__main__':
+    main()
+```
+### utils file
+```
+from __future__ import print_function, division
+from builtins import range
+# Note: you may need to update your version of future
+# sudo pip install -U future
+
+import numpy as np
+import pandas as pd
+from sklearn.utils import shuffle
+
+#deep neural network
+#M1 means the input size and the M2 means the output size
+def init_weight_and_bias(M1, M2):
+    W = np.random.randn(M1, M2) / np.sqrt(M1)
+    b = np.zeros(M2)
+    return W.astype(np.float32), b.astype(np.float32)
+
+#for convolutional neural network
+def init_filter(shape, poolsz):
+    w = np.random.randn(*shape) * np.sqrt(2) / np.sqrt(np.prod(shape[1:]) + shape[0]*np.prod(shape[2:] / np.prod(poolsz)))
+    return w.astype(np.float32)
+
+
+def relu(x):
+    return x * (x > 0)
+
+
+def sigmoid(A):
+    return 1 / (1 + np.exp(-A))
+
+
+def softmax(A):
+    expA = np.exp(A)
+    return expA / expA.sum(axis=1, keepdims=True)
+
+
+def sigmoid_cost(T, Y):
+    return -(T*np.log(Y) + (1-T)*np.log(1-Y)).sum()
+
+
+def cost(T, Y):
+    return -(T*np.log(Y)).sum()
+
+
+def cost2(T, Y):
+    # same as cost(), just uses the targets to index Y
+    # instead of multiplying by a large indicator matrix with mostly 0s
+    N = len(T)
+    return -np.log(Y[np.arange(N), T]).mean()
+
+
+def error_rate(targets, predictions):
+    return np.mean(targets != predictions)
+
+#utrns target matrix into an indicator matrix
+def y2indicator(y):
+    N = len(y)
+    K = len(set(y))
+    ind = np.zeros((N, K))
+    for i in range(N):
+        ind[i, y[i]] = 1
+    return ind
+
+#, Ntest=1000
+def getData(balance_ones=True):
+    # images are 48x48 = 2304 size vectors
+    Y = []
+    X = []
+    first = True
+    for line in open('fer2013.csv'):
+        if first:
+            first = False
+        else:
+            row = line.split(',')
+            Y.append(int(row[0]))
+            X.append([int(p) for p in row[1].split()])
+
+    X, Y = np.array(X) / 255.0, np.array(Y) #normalize the data
+
+    # shuffle and split
+    # X, Y = shuffle(X, Y)
+    # Xtrain, Ytrain = X[:-Ntest], Y[:-Ntest]
+    # Xvalid, Yvalid = X[-Ntest:], Y[-Ntest:]
+
+    if balance_ones:
+        # balance the 1 class
+        X0, Y0 = X[Y!=1, :], Y[Y!=1]
+        X1 = Xtrain[Y==1, :]
+        X1 = np.repeat(X1, 9, axis=0)
+        X = np.vstack([X0, X1])
+        Y = np.concatenate((Y0, [1]*len(X1)))
+    #, Xvalid, Yvalid
+    return X, Y
+
+#for convolutional neural network
+def getImageData():
+    Xtrain, Ytrain, Xvalid, Yvalid = getData()
+    N, D = Xtrain.shape
+    d = int(np.sqrt(D))
+    Xtrain = Xtrain.reshape(-1, 1, d, d)
+    Xvalid = Xvalid.reshape(-1, 1, d, d)
+    return Xtrain, Ytrain, Xvalid, Yvalid
+
+
+def getBinaryData():
+    Y = []
+    X = []
+    first = True
+    for line in open('fer2013.csv'):
+        if first:
+            first = False
+        else:
+            row = line.split(',')
+            y = int(row[0])
+            if y == 0 or y == 1:
+                Y.append(y)
+                X.append([int(p) for p in row[1].split()])
+    return np.array(X) / 255.0, np.array(Y)
+
+
+def crossValidation(model, X, Y, K=5):
+    # split data into K parts
+    X, Y = shuffle(X, Y)
+    sz = len(Y) // K
+    errors = []
+    for k in range(K):
+        xtr = np.concatenate([ X[:k*sz, :], X[(k*sz + sz):, :] ])
+        ytr = np.concatenate([ Y[:k*sz], Y[(k*sz + sz):] ])
+        xte = X[k*sz:(k*sz + sz), :]
+        yte = Y[k*sz:(k*sz + sz)]
+
+        model.fit(xtr, ytr)
+        err = model.score(xte, yte)
+        errors.append(err)
+    print("errors:", errors)
+    return np.mean(errors)
+
+```
+### Final result after training
+```
+epochs : 9990 ; costs : 105.82533292275525 ; error rate : 0.036
+best validation error : 0.019
+```
+### Cost function graph
+![](util_pics/facial_recognition/neural_network_facial_recognition_cost_graph.png)
+#### NOTE : Here we have used tanh activation function
+## Facial recognition with logistic regression and softmax :
+### import the necessary libraries and functions from the utils.py file
+```
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn.utils import shuffle
+from util import getData, softmax, cost, error_rate, y2indicator
+```
+### class for the logistic regression model
+```
+class LogisticModel(object):
+    def __init__(self):
+        pass
+    #fit function which will train our model
+    def fit(self, X,Y,learning_rate = 10e-8, reg=10e-12,epochs=10000, show_fig=False):
+        #shuffle X and Y
+        X,Y = shuffle(X, Y)
+        #split X and y in taining and validation sets so we are going to use another set of data to plot the cost
+        Xvalid,Yvalid = X[-1000:],Y[-1000:]
+        Tvalid = y2indicator(Yvalid)
+        # Set the X and Y to the rest of X and Y
+        X, Y = X[:-1000],Y[:-1000]
+        N,D = X.shape
+        #Number of classes
+        K = len(set(Y))
+        #matrix of targets
+        T = y2indicator(Y)
+        #initialize the weights
+        self.W = np.random.randn(D,K)/np.sqrt(D + K)
+        self.b = np.zeros(K)
+
+        # create an array to hold that cost
+        costs = []
+        # keep track of best validation
+        # Its gonna start as 1
+        best_validation_error = 1
+        for i in range(epochs):
+            #calculate probability Y given x
+            pY = self.forward(X)
+
+            #gradient descent step
+            self.W -= learning_rate*(X.T.dot(pY-T) + reg*self.W)
+            self.b -= learning_rate*((pY-T).sum(axis=0) + reg*self.b)
+
+            #in every 20 steps we are going to calculate the cost
+            if i%10 == 0:
+                pYvalid = self.forward(Xvalid)
+                #calculating cost
+                c = cost(Tvalid,pYvalid)
+                costs.append(c)
+                #calculating error rate
+                e = error_rate(Yvalid,np.argmax(pYvalid, axis = 1))
+                print (f"i: {i} , cost : {c} , error : {e}")
+                #keep track of best validation error
+                if e < best_validation_error:
+                    best_validation_error = e
+        print(f"best validation error : {best_validation_error}")
+
+        if show_fig:
+            plt.plot(costs)
+            plt.show()
+    def forward(self, X):
+        return softmax(X.dot(self.W) + self.b)
+    def predict(self, X):
+        pY = self.forward(X)
+        return np.argmax(pY, axis = 1)
+    #This could be used for cross validation
+    def score(self,X,Y):
+        prediction = self.predict(X)
+        return 1- error_rate(Y,prediction)
+```
+### main function
+```
+def main():
+    #get binary data This does not automatically balances the classes of data for us
+    X,Y = getData()
+    # # We are going to balance the classes of data here
+    # X0 = X[Y==0, :]
+    # X1 = X[Y==1, :]
+    # #repeate the occourances of data of X1
+    # X1 = np.repeat(X1, 9, axis=0)
+    # X = np.vstack([X0,X1])
+    # Y = np.array([0]*len(X0) + [1]*len(X1))
+
+    #use our model the way we use scikitLearn
+    model = LogisticModel()
+    model.fit(X,Y,epochs=10000,show_fig = True)
+    model.score(X,Y)
+
+if __name__ == '__main__' :
+    main()
+```
+### Final result after training
+```
+i: 9990 , cost : 1687.8128548865552 , error : 0.616
+best validation error : 0.615
+```
+### Cost function graph
+![](util_pics/facial_recognition/logistic_regression_facial_recognition_softmax.png)
