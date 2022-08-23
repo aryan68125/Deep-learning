@@ -19,7 +19,7 @@
 4. Sigmoid function image ->
 ![](util_pics/sofmax_vs_sigmoid/sigmoid_function_graph.png)
 5. Important equations used in a typical neural netoworks ->
-![](util_pics/important_equations_related_to_neural_networks/important_equations.png)
+![](util_pics/important_equations_related_to_neural_networks/important_equations_ann.png)
 
 ## Softmax :
 ### implementation -->
