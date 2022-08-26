@@ -1,4 +1,9 @@
 # This repository holds all the programs and resources related to deep learning
+## IMPORTANT NOTE : Before we start anything I want to tell you that if you ever want to convert your jupyter notebook into a PDF then run the code below in your linux terminal ->  
+```
+sudo apt-get install pandoc texlive-xetex
+```
+## After this go to your jupyter notebook -> Files -> Download as -> PDf via LateX to convert your jupyter Notebook into PDF
 ## Numpy axis ---->
 ![](util_pics/numpy/numpy_axis.jpg)
 ## Softmax VS Sigmoid functions
